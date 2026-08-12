@@ -155,7 +155,10 @@
 <!-- ========== 成长阶段弹窗 ========== -->
 <div class="modal-overlay" id="growthModal">
   <div class="modal-box" style="max-width:380px;text-align:left;">
-    <h2 style="text-align:center;">🌱 成长之路</h2>
+    <div class="modal-header">
+      <button class="modal-back-btn" onclick="hideGrowthModal()">←</button>
+      <h2 style="text-align:center;">🌱 成长之路</h2>
+    </div>
     <div id="growthTimeline" style="margin:12px 0;"></div>
     <div id="growthBoost" style="background:var(--bg-warm);border-radius:12px;padding:12px;margin-top:12px;">
       <p style="font-size:13px;font-weight:600;margin-bottom:8px;">⚡ 成长加速事件</p>
@@ -169,7 +172,10 @@
 <!-- ========== 照顾弹窗 ========== -->
 <div class="modal-overlay" id="careModal">
   <div class="modal-box" style="max-width:360px;">
-    <h2>💝 照顾宠物</h2>
+    <div class="modal-header">
+      <button class="modal-back-btn" onclick="hideCareModal()">←</button>
+      <h2>💝 照顾宠物</h2>
+    </div>
     <p style="font-size:12px;color:var(--text-light);">🪙 当前金币：<span id="careCoins">0</span></p>
 
     <p style="font-size:12px;color:var(--text-light);text-align:left;margin-bottom:4px;">🍖 喂食</p>
@@ -197,7 +203,10 @@
 <!-- ========== 外出选择弹窗 ========== -->
 <div class="modal-overlay" id="outingModal">
   <div class="modal-box" style="max-width:360px;">
-    <h2>🚪 外出做什么？</h2>
+    <div class="modal-header">
+      <button class="modal-back-btn" onclick="hideOutingModal()">←</button>
+      <h2>🚪 外出做什么？</h2>
+    </div>
     <p>选一项活动，宠物会自己计时完成～</p>
 
     <p style="font-size:12px;color:var(--text-light);text-align:left;margin-bottom:4px;">📚 学习课程（提升属性）</p>
