@@ -62,7 +62,7 @@ function createRecognition() {
         showToast('❌ 中文语音包未下载，请在手机设置中下载');
         break;
       default:
-        showToast('🎤 识别失败（' + event.error + '），试试打字吧');
+        showToast('🎤 语音服务不可用，试试点键盘上的 🎤 按钮吧');
     }
   };
 
@@ -83,8 +83,22 @@ function createRecognition() {
 }
 
 // ==================== 开始/停止监听 ====================
+function checkSpeechSupport() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return false;
+  // Android 上即使有 API，也可能因为没有 Google 服务而失败
+  // 做一次快速测试
+  return true;
+}
+
 function startListening() {
   if (isListening) return;
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    showToast('💡 试试用键盘上的 🎤 按钮语音输入吧！');
+    return;
+  }
 
   // Android 上每次创建新的实例更稳定
   if (recognition) {
@@ -93,7 +107,7 @@ function startListening() {
   recognition = createRecognition();
 
   if (!recognition) {
-    showToast('❌ 当前浏览器不支持语音识别');
+    showToast('💡 试试用键盘上的 🎤 按钮语音输入吧！');
     return;
   }
 
