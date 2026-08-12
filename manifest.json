@@ -1,0 +1,17 @@
+{
+  "name": "🐾 我的小宠物",
+  "short_name": "小宠物",
+  "description": "一只会聊天、会成长、会冒险的 AI 虚拟宠物",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fef9ef",
+  "theme_color": "#fef9ef",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

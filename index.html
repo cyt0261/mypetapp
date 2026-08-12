@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#fef9ef">
+<title>🐾 我的小宠物</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app" id="app">
+  <!-- ========== 顶部栏 ========== -->
+  <div class="top-bar">
+    <h1>🐾 <span id="headerName">我的小宠物</span></h1>
+    <div class="tabs">
+      <button class="tab-btn active" data-page="home">🏠 家</button>
+      <button class="tab-btn" data-page="diary">📝 日记</button>
+      <button class="tab-btn" data-page="settings">⚙️</button>
+    </div>
+  </div>
+
+  <!-- ========== 主页 ========== -->
+  <div class="page active" id="page-home">
+    <!-- 宠物展示 -->
+    <div class="pet-area">
+      <div class="pet-canvas" id="petCanvas" title="戳戳我"></div>
+      <div class="pet-name-stage">
+        <span class="pet-name" id="petName">豆豆</span>
+        <span class="pet-stage" id="petStage">🐣 幼年期</span>
+      </div>
+      <div class="coins-display" id="coinsDisplay">🪙 0</div>
+      <div class="stats-grid" id="statsGrid"></div>
+    </div>
+
+    <!-- 聊天区 -->
+    <div class="chat-area" id="chatArea">
+      <div class="chat-bubble pet">👋 你好呀！我是你的小宠物～每天陪着你，是我最开心的事！</div>
+    </div>
+
+    <!-- 操作栏 -->
+    <div class="action-bar">
+      <div class="quick-actions">
+        <button class="quick-btn highlight" id="careBtn"><span class="btn-icon">💝</span>照顾</button>
+        <button class="quick-btn outing" data-action="outing"><span class="btn-icon">🚪</span>外出</button>
+        <button class="quick-btn" id="shareBtn"><span class="btn-icon">📸</span>明信片</button>
+      </div>
+      <div class="chat-input-row">
+        <button class="send-btn" id="micBtn" style="background:transparent;color:var(--text);font-size:20px;margin-right:4px;">🎤</button>
+        <button class="send-btn" id="voiceToggleBtn" style="background:transparent;font-size:16px;margin-right:4px;" onclick="toggleVoiceOutput()">🔊</button>
+        <input class="chat-input" id="chatInput" placeholder="和宠物说点什么..." autocomplete="off">
+        <button class="send-btn" id="sendBtn">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 日记页 ========== -->
+  <div class="page" id="page-diary">
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-sub="diary">📝 日记</button>
+      <button class="sub-tab" data-sub="achievements">🏅 成就</button>
+    </div>
+    <div id="diarySection">
+      <button class="add-diary-btn" id="addDiaryBtn">✏️ 写一条新日记</button>
+      <div class="diary-list" id="diaryList">
+        <div class="diary-empty">🐾 还没有日记，和宠物一起创造回忆吧～</div>
+      </div>
+    </div>
+    <div id="achievementsSection" style="display:none;flex:1;overflow-y:auto;">
+      <div class="achievements-grid" id="achievementsGrid"></div>
+    </div>
+  </div>
+
+  <!-- ========== 设置页 ========== -->
+  <div class="page" id="page-settings">
+    <div class="settings-area">
+      <div class="setting-group">
+        <label>🐱 宠物类型</label>
+        <select id="settingPetType">
+          <option value="cat">🐱 小猫</option>
+          <option value="dog">🐶 小狗</option>
+        </select>
+      </div>
+      <div class="setting-group">
+        <label>📛 宠物名字</label>
+        <input type="text" id="settingPetName" placeholder="给你的宠物起个名字" maxlength="10">
+      </div>
+      <div class="setting-group">
+        <label>🔑 DeepSeek API Key</label>
+        <input type="password" id="settingApiKey" placeholder="sk-xxxxxxxx">
+        <span class="setting-hint">你的 Key 只保存在浏览器本地，不会上传</span>
+      </div>
+      <div class="setting-group">
+        <label>🤖 模型选择</label>
+        <select id="settingModel">
+          <option value="deepseek-chat">DeepSeek V3 (便宜)</option>
+          <option value="deepseek-reasoner">DeepSeek R1 (深度推理)</option>
+        </select>
+        <span class="setting-hint">推荐 V3，聊天够用且成本很低</span>
+      </div>
+      <button class="save-settings-btn" id="saveSettingsBtn">💾 保存设置</button>
+      <button class="danger-btn" id="resetDataBtn">🔄 重置所有数据</button>
+      <div style="display:flex;gap:8px;">
+        <button class="save-settings-btn" id="exportDataBtn" style="flex:1;">📤 导出数据</button>
+        <button class="danger-btn" id="importDataBtn" style="flex:1;border-color:var(--accent);color:var(--accent);">📥 导入数据</button>
+      </div>
+      <input type="file" id="importFileInput" accept=".json" style="display:none;">
+      <span class="setting-hint text-center mt-8">
+        API 成本参考：约 ¥0.002/次对话，每天 ¥10 预算够用 💰
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 番茄钟覆盖层 ========== -->
+<div class="pomodoro-overlay" id="pomodoroOverlay">
+  <div class="pomodoro-pet" id="pomodoroPetEmoji">📖</div>
+  <div class="pomodoro-label" id="pomodoroLabel">学习中...</div>
+
+  <!-- 时间选择 -->
+  <div id="timeSelection">
+    <p style="font-size:14px;color:var(--text-light);margin-bottom:8px;">选择时长：</p>
+    <div class="time-options">
+      <button class="time-option" onclick="selectTime(10)">⏱ 10分钟</button>
+      <button class="time-option" onclick="selectTime(25)">🍅 25分钟</button>
+      <button class="time-option" onclick="selectTime(45)">🔥 45分钟</button>
+    </div>
+    <button class="pomodoro-cancel mt-16" onclick="cancelPomodoro()">取消</button>
+  </div>
+
+  <!-- 计时环 -->
+  <div class="pomodoro-ring" id="pomodoroRing" style="display:none;">
+    <svg viewBox="0 0 140 140" width="160" height="160">
+      <circle class="bg-circle" cx="70" cy="70" r="65"/>
+      <circle class="progress-circle" id="pomodoroCircle" cx="70" cy="70" r="65"
+        stroke-dasharray="408.4" stroke-dashoffset="0"/>
+    </svg>
+    <div class="pomodoro-time" id="pomodoroTime">25:00</div>
+  </div>
+
+  <!-- 完成 -->
+  <div class="pomodoro-complete" id="pomodoroComplete">
+    <h2>🎉 完成啦！</h2>
+    <p></p>
+    <div class="reward"></div>
+    <button class="modal-btn mt-16" onclick="closePomodoro()">🏠 回去</button>
+  </div>
+
+  <button class="pomodoro-cancel" id="cancelPomodoro" style="display:none;">提前结束</button>
+</div>
+
+<!-- ========== 成长阶段弹窗 ========== -->
+<div class="modal-overlay" id="growthModal">
+  <div class="modal-box" style="max-width:380px;text-align:left;">
+    <h2 style="text-align:center;">🌱 成长之路</h2>
+    <div id="growthTimeline" style="margin:12px 0;"></div>
+    <div id="growthBoost" style="background:var(--bg-warm);border-radius:12px;padding:12px;margin-top:12px;">
+      <p style="font-size:13px;font-weight:600;margin-bottom:8px;">⚡ 成长加速事件</p>
+      <p style="font-size:11px;color:var(--text-light);margin-bottom:8px;">完成事件可以缩短成长时间！每天随机刷新一个～</p>
+      <div id="growthEvent"></div>
+    </div>
+    <button class="modal-btn" id="closeGrowthModal" style="background:transparent;color:var(--text-light);border:1px solid var(--bar-bg);margin-top:8px;">关闭</button>
+  </div>
+</div>
+
+<!-- ========== 照顾弹窗 ========== -->
+<div class="modal-overlay" id="careModal">
+  <div class="modal-box" style="max-width:360px;">
+    <h2>💝 照顾宠物</h2>
+    <p style="font-size:12px;color:var(--text-light);">🪙 当前金币：<span id="careCoins">0</span></p>
+
+    <p style="font-size:12px;color:var(--text-light);text-align:left;margin-bottom:4px;">🍖 喂食</p>
+    <div class="option-grid" id="foodOptions"></div>
+
+    <p style="font-size:12px;color:var(--text-light);text-align:left;margin-bottom:4px;">🎾 玩耍</p>
+    <div class="option-grid" id="playOptions"></div>
+
+    <p style="font-size:12px;color:var(--text-light);text-align:left;margin-bottom:4px;">✋ 摸摸</p>
+    <div class="option-grid">
+      <button class="outing-option" onclick="doCare('pet_head')">
+        <span class="opt-icon">🤚</span><span class="opt-title">摸摸头</span>
+        <span class="opt-desc">心情+10 好感+2 · 免费</span>
+      </button>
+      <button class="outing-option" onclick="doCare('pet_hug')">
+        <span class="opt-icon">🫂</span><span class="opt-title">抱抱</span>
+        <span class="opt-desc">心情+15 好感+5 · 免费</span>
+      </button>
+    </div>
+
+    <button class="modal-btn" id="closeCareModal" style="background:transparent;color:var(--text-light);border:1px solid var(--bar-bg);margin-top:4px;">关闭</button>
+  </div>
+</div>
+
+<!-- ========== 外出选择弹窗 ========== -->
+<div class="modal-overlay" id="outingModal">
+  <div class="modal-box" style="max-width:360px;">
+    <h2>🚪 外出做什么？</h2>
+    <p>选一项活动，宠物会自己计时完成～</p>
+
+    <p style="font-size:12px;color:var(--text-light);text-align:left;margin-bottom:4px;">📚 学习课程（提升属性）</p>
+    <div class="option-grid" style="margin-bottom:8px;">
+      <button class="outing-option" data-course="intelligence" onclick="startCourse('intelligence')">
+        <span class="opt-icon">📚</span><span class="opt-title">学习课程</span>
+        <span class="opt-desc">提升智力 🧠</span>
+      </button>
+      <button class="outing-option" data-course="strength" onclick="startCourse('strength')">
+        <span class="opt-icon">💪</span><span class="opt-title">锻炼健身</span>
+        <span class="opt-desc">提升力量 🏋️</span>
+      </button>
+      <button class="outing-option" data-course="charisma" onclick="startCourse('charisma')">
+        <span class="opt-icon">🎨</span><span class="opt-title">艺术修养</span>
+        <span class="opt-desc">提升魅力 ✨</span>
+      </button>
+    </div>
+
+    <p style="font-size:12px;color:var(--text-light);text-align:left;margin-bottom:4px;">💼 打工赚钱</p>
+    <div class="option-grid" id="jobOptions"></div>
+
+    <p style="font-size:12px;color:var(--text-light);text-align:left;margin-bottom:4px;">🗺️ 冒险探索</p>
+    <div class="option-grid">
+      <button class="outing-option" onclick="hideOutingModal();startAdventure();" style="border-color:var(--accent);">
+        <span class="opt-icon">🗺️</span><span class="opt-title">随机冒险</span>
+        <span class="opt-desc">探索未知 · 发现宝藏 ✨</span>
+      </button>
+    </div>
+
+    <button class="modal-btn" id="closeOutingModal" style="background:transparent;color:var(--text-light);border:1px solid var(--bar-bg);margin-top:4px;">取消</button>
+  </div>
+</div>
+
+<!-- ========== 首次设置弹窗 ========== -->
+<div class="modal-overlay" id="welcomeModal">
+  <div class="modal-box">
+    <h2>🐾 欢迎！</h2>
+    <p>选一只属于你的小宠物吧～</p>
+    <div class="pet-select">
+      <div class="pet-option selected" data-type="cat" id="optCat">🐱</div>
+      <div class="pet-option" data-type="dog" id="optDog">🐶</div>
+    </div>
+    <input type="text" id="welcomeName" placeholder="给它起个名字" maxlength="10" value="豆豆">
+    <button class="modal-btn" id="welcomeStart">🎉 开始我们的故事！</button>
+  </div>
+</div>
+
+<!-- JS 模块（按依赖顺序加载） -->
+<script src="js/app.js"></script>
+<script src="js/pet.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/events.js"></script>
+<script src="js/diary.js"></script>
+<script src="js/pomodoro.js"></script>
+<script src="js/achievements.js"></script>
+<script src="js/daily.js"></script>
+<script src="js/weekly.js"></script>
+<script src="js/care.js"></script>
+<script src="js/voice.js"></script>
+<script src="js/share.js"></script>
+<script src="js/holiday.js"></script>
+</body>
+</html>
